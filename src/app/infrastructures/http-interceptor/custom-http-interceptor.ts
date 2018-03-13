@@ -28,6 +28,7 @@ export class CustomHttpInterceptor implements HttpInterceptor {
     }
     if (err.status === 404) {
       console.log('Page Not Found');
+      // this.router.navigateByUrl(`/heroes`);
     }
     // handle your auth error or rethrow
     return Observable.throw(err);

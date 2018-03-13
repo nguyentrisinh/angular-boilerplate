@@ -4,6 +4,8 @@ import { of } from 'rxjs/observable/of';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, map, tap } from 'rxjs/operators';
 
+// Extra module
+import { ToastrService } from 'ngx-toastr';
 
 import { HEROES } from '../../mock-heroes';
 import { Hero } from '../../hero';
@@ -21,11 +23,12 @@ export class HeroService {
     private messageService: MessageService,
     private http: HttpClient,
     private constantService: ConstantService,
+    private toastr: ToastrService,
   ) { }
 
   getHeroes(): Observable<Hero[]> {
     // const testData = this.http.get<Hero[]>('http://localhost:63715/api/values')
-    const testData = this.http.get<Hero[]>(this.constantService.getBaseUrl() + 'courses.json?orderBy=%22$key%22&limitToFirst=1')
+    const testData = this.http.get<Hero[]>(this.heroesUrl)
       .subscribe(response => console.log(response));
     // Todo: send the message _after_ fetching the heroes
     return this.http.get<Hero[]>(this.heroesUrl)
@@ -50,7 +53,10 @@ export class HeroService {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
     };
     return this.http.put(this.heroesUrl, hero, httpOptions).pipe(
-      tap(_ => this.log(`updated hero id=${hero.id}`)),
+      tap(_ => {
+        this.log(`updated hero id=${hero.id}`);
+        this.toastr.success('Hello world!', 'Update success');
+      }),
       catchError(this.handleError<any>('updateHero'))
     );
   }
